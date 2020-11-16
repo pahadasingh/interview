@@ -1,0 +1,16 @@
+yarn lint
+yarn lint --fix / npm run lint -- --fix
+yarn outdated
+ps aux | grep -i node
+yarn.lock, package-lock.json, node_modules
+
+----------------------------------------------------
+$ npx create-nuxt-app <project-name>
+or $yarn create nuxt-app <project-name>
+
+$ cd <project-name>
+$ npm run dev
+$ npm install --save nuxt
+nuxt.config.js
+~ or @	srcDir
+~~ or @@	rootDir

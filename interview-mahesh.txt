@@ -1,0 +1,321 @@
+for (let i = 0; i < 5; i++) {
+	setTimeout(function() { console.log(i); }, i * 1000 );
+}
+Ans: because of "let" - 0 1 2 3 4
+if it was "var" - 5 5 5 5 5
+---------------------------------------
+var Employee = {
+		  company: 'xyz'
+		}
+var emp1 = Object.create(Employee);
+delete emp1.company
+console.log(emp1.company);
+Ans:- 'xyz'
+Reason being You can not delete from prototype using object of an object
+but you can do "delete Employee.company" then "Employee.company" will give output - undefined 
+---------------------------------------
+var x = { foo : 1};
+var output = (function(){
+	delete x.foo;
+	return x.foo;
+  })();
+console.log(output);
+
+Ans:- undefined
+where output is the return of IIFE(Immediately-invoked Function Expression) where the global object you are deleting and then returning 
+
+---------------------------------------
+var output = (function(x){
+					delete x;
+					return x;
+			  })(0);
+
+console.log(output);
+Ans: 0 
+Reason - You can not delete an any variable in javascript, here x is the argument variable
+---------------------------------------
+var y = 1;
+if (function f(){}) {
+	y += typeof f;
+}
+console.log(y);
+Ans: 1undefined
+Reason: y = 1+undefined, where typeof f  cannot be a function outside of of "if()"
+---------------------------------------
+function isInt(num) {
+  return num % 1 === 0;
+}
+console.log(isInt(12.2));
+
+Ans: false 
+Reason - Remainder of a fraction will b fraction
+---------------------------------------
+var b = 1;
+function outer(){
+	var b = 2
+	function inner(){
+		b++;
+		var b = 3;
+		console.log(b)
+	}
+	inner();
+}
+outer();
+
+Ans - 3
+Reason - Imidiately value inialized to 3 before print, all other global values will be removed
+---------------------------------------
+console.log(typeof typeof 1);
+Ans: String
+typeof 1 = integer
+typeof "integer" = String
+---------------------------------------
+console.log(3 > 2 > 1);
+
+Ans: false
+Reason: left -> right evaluate
+3>2 = true means 1
+1 > 1 = false
+---------------------------------------
+var x = 21;
+var girl = function () {
+	console.log(x);
+	var x = 20;
+};
+girl();
+
+Ans: undefined
+Reason:- Hoisting 
+when expression is evaluated, it checks for declaration/defination though a globally defined, later also declared
+
+---------------------------------------
+(function () {
+	try {
+		throw new Error();
+	} catch (x) {
+		var x = 1, y = 2;
+		console.log(x);
+	}
+})();
+
+Ans: 1
+Reason- simple x is replaced before its print, so the immidiate value will be considered 
+
+---------------------------------------
+var length = 10;
+function fn() {
+	console.log(this.length);
+}
+
+var obj = {
+  length: 5,
+  method: function(fn) {
+	fn();
+	arguments[0]();
+  }
+};
+
+obj.method(fn, 1);
+
+Ans:- 10, 2
+Reason: length is globally defined which means ref to (this/window) object 
+and arguments predefined array for function arguments where arguments[0] says the first argument which is fn() , 
+but its scope refers to method [argumets] array, so the length of array is 2 parameters passed to method()
+
+---------------------------------------
+var hero = {
+			_name: 'John Doe',
+			getSecretIdentity: function (){
+				return this._name;
+			}
+		};
+
+var stoleSecretIdentity = hero.getSecretIdentity;
+console.log(stoleSecretIdentity());
+
+Ans: undefined
+Why so: method is assigned to a function veriable, scope of method and function is different
+Sol: 
+
+var stoleSecretIdentity = hero.getSecretIdentity();
+console.log(stoleSecretIdentity);
+-John Doe
+---------------------------------------
+(function(x) {
+	return (function(y) {
+		console.log(x);
+	})(2)
+})(1);
+
+Ans:- 1
+Reason: x is the outer veriable for inner function, which can be accessed
+
+---------------------------------------
+var a={},
+b={key:'b'},
+c={key:'c'};
+
+a[b]=123;
+a[c]=456;
+
+console.log(a[b]);
+
+Ans: 456
+Since: 
+where as "a" keys are b,c which are "[object Object]"
+a["[object Object]"] =  123
+a["[object Object]"] =  456
+
+---------------------------------------
+console.log(false === '0')
+Ans: false 
+Reason: 
+"boolean" is stictly comparing(3 equal sign) with string or integer
+false == 0 -------> true(values are same, type not compared)
+---------------------------------------
+
+for (var i = 0; i < 5; i++) {
+	(function(x) {
+		setTimeout(function() { console.log(x); }, x*1000);
+	})(i);
+}
+
+Ans: 0 1 2 3 4
+Reason: IIFE function inside loop having its own scope, so its arguments printing
+---------------------------------------
+
+for (var i = 0; i < 5; i++) {
+	setTimeout(function() { console.log(i); }, i * 1000 );
+}
+Ans: 5 5 5 5 5 
+At end of the loop, i become 5, then webAPI will be executed in event loop 
+---------------------------------------
+console.log(0.1 + 0.2 == 0.3);
+Ans: false
+Reason: 0.1 + 0.2 = 0.30000000000000004
+---------------------------------------
+
+(function(){
+	var a = b = 3;
+})();
+console.log( (typeof b !== 'undefined'));
+
+Ans: False
+Reason: b = 3, so integer inside a function since it is available in global scope, neigbour function is giving this value
+
+---------------------------------------
+
+
+#######################################
+From Myside
+---------------------------------------
+
+1. Data Type
+	NaN === NaN   // o1
+	3 > 2 > 1 == true   // o2
+	(true + false) > 2 + false   // o3
+	(3 + 4 + '0.5' + 1); // o4
+	isNaN(parseInt('1aaaa')) // o5
+	parseInt("4F", 16), parseInt("100", 2) //o6
+
+
+
+2. Global Scope
+	(function() {
+	    var a = b = 20;
+	    if(true) {
+	        let c = 30;
+	    }
+	    console.log(a, b, c) // o1
+	    
+	    function sum() {
+	    	let c = 40
+	        console.log(a+b+c)
+	    }
+	    sum() // o2
+	})();
+	sum() // o3
+
+
+	o/p:-
+	o1 - error
+	o2 - 40
+	o3 - error
+---------------------------------------------------------------
+
+
+3. Reference
+var a = 10
+var c = {a: a, b: 10}
+a = 20
+c.a = ?
+~~~~~~~
+var a = 10;
+var x = {a, b:"20"};
+x = ?
+
+
+4. Remove duplicate from this array
+var a = [1,2,3,4,5,6,7,8,9,10,23,20,10]
+
+
+
+5. Spread Operator
+var a = [10,20,30]
+var b = [11,12,13, ...a]
+var c = [11,12,13, ...a, ...d] = [11,12,13,10,20,30,40,50];
+b, d = ?
+
+
+6. stack -> job queue -> callback queue
+(function() {
+    console.log(1); 
+    setTimeout(function(){console.log(2)}, 1000); 
+    setTimeout(function(){console.log(3)}, 0); 
+    console.log(4);
+})();
+
+---------------------
+
+console.log('Message no. 1: Sync');
+setTimeout(function() {
+   console.log('Message no. 2: setTimeout');
+}, 0);
+var promise = new Promise(function(resolve, reject) {
+   resolve();
+});
+promise.then(function(resolve) {
+   console.log('Message no. 3: 1st Promise');
+})
+.then(function(resolve) {
+   console.log('Message no. 4: 2nd Promise');
+});
+console.log('Message no. 5: Sync');
+
+
+
+Q7. Trim the   spaces to a    single space
+    Sraban     Kumar    Pahadasingh
+
+
+Q9. undefined
+var X = { Foo : 1}; 
+delete X.Foo; 
+console.log(X.Foo);
+
+Q10.
+
+
+
+IIFE - immidiately invoke a function
+=======================================================================
+
+1. Math.random()
+2. new Date("2015-03-25"); getFullYear(), getMonth(), getDay(), Date.now()
+3. "use strict";
+4. getElmentBYId(), getQuerySelector(),
+5. window.load ~ jqueryRady
+6. 
+
+---------------------------------------
+
